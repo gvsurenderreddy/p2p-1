@@ -1,3 +1,6 @@
 
 ### the IP or DN of the middle server
 server=127.0.0.1
+
+### the port of the sshd service
+port=2201
