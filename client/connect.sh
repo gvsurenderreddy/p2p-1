@@ -1,5 +1,15 @@
 #!/bin/bash -e
 
+### make sure that vncviewer is installed
+if ! which vncviewer >/dev/null
+then
+    echo "
+You need to install vncviewer:
+    sudo apt-get install vncviewer
+"
+    exit 1
+fi
+
 ### go to the script directory
 cd $(dirname $0)
 

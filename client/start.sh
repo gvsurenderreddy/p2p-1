@@ -1,5 +1,15 @@
 #!/bin/bash -e
 
+### make sure that x11vnc is installed
+if ! which x11vnc >/dev/null
+then
+    echo "
+You need to install x11vnc:
+    sudo apt-get install x11vnc
+"
+    exit 1
+fi
+
 ### go to the script directory
 cd $(dirname $0)
 
