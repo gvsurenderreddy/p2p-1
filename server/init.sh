@@ -30,6 +30,9 @@ case "$1" in
 	do
 	    chroot $CHROOT/ service $SRV start
 	done
+
+        ### update the list of the authorized keys
+        chroot $CHROOT/ /home/vnc/update_keys.sh
 	;;
 
     stop)
