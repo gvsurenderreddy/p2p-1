@@ -54,6 +54,7 @@
   Then get the scipts from GitHub:
   #+BEGIN_EXAMPLE
   git clone https://github.com/dashohoxha/p2p.git p2p-vnc
+  chmod 600 p2p-vnc/client/keys/*.key
   #+END_EXAMPLE
 
   Set the IP or DN of the middle server at ~p2p-vnc/client/config~:
@@ -82,6 +83,7 @@
   Then get the scipts from GitHub:
   #+BEGIN_EXAMPLE
   git clone https://github.com/dashohoxha/p2p.git p2p-vnc
+  chmod 600 p2p-vnc/client/keys/*.key
   #+END_EXAMPLE
 
   Set the IP or DN of the middle server at ~p2p-vnc/client/config~:
