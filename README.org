@@ -1,0 +1,109 @@
+
+* Remote Desktop Support with Peer-To-Peer VNC
+
+  VNC is a well-known tool for remote desktop view and control. The
+  two computers establish a TCP connection so that one of them can
+  access the display of the other. However, almost always these two
+  computers are behind a firewall/router and do not have a real IP to
+  be accessed from the Internet. In such a case one of them can do
+  *port forwarding* on the router/firewall and this would allow the
+  connection to be established.
+
+  The problem is that more often than not, none of the parts that want
+  to establish such a remote connection have access to the firewall
+  that separates/protects it from the real internet. Sometimes it can
+  even be several levels deep behind the firewall (several layers of
+  firewalls). However, if you have access to an external server (for
+  example a server in the cloud) there is still a workaround and
+  things can be fixed to work. For more details read the docs, which
+  explain the tricks and hacks that can be used in such a case in
+  order to establish a secure connection to a remote desktop.
+
+  This project has some scripts that simplify the installation of a
+  middle server, and the connection between the two clients.
+
+
+* Installation of a middle server
+
+  For more security and flexibility, the installation is done inside a
+  chroot environment (which is built with debootstrap):
+
+  #+BEGIN_EXAMPLE
+  cd /var/chroot/
+  git clone https://github.com/dashohoxha/p2p.git
+  nohup nice p2p/server/install.sh P2P &
+  tail -f nohup.out
+  #+END_EXAMPLE
+
+  After the installation is done, you can start and stop the service
+  with:
+  #+BEGIN_EXAMPLE
+  service chroot-P2P stop
+  service chroot-P2P start
+  #+END_EXAMPLE
+
+
+* Sharing the desktop (on the client)
+
+  To share the desktop we need a VNC server. Make sure that *x11vnc*
+  is installed:
+  #+BEGIN_EXAMPLE
+  sudo apt-get install x11vnc
+  #+END_EXAMPLE
+
+  Then get the scipts from GitHub:
+  #+BEGIN_EXAMPLE
+  git clone https://github.com/dashohoxha/p2p.git p2p-vnc
+  #+END_EXAMPLE
+
+  Set the IP or DN of the middle server at ~p2p-vnc/client/config~:
+  #+BEGIN_EXAMPLE
+  ### the IP or DN of the middle server
+  server=127.0.0.1
+  #+END_EXAMPLE
+
+  Now start a new peer-to-peer VNC connection:
+  #+BEGIN_EXAMPLE
+  p2p-vnc/client/start.sh
+  #+END_EXAMPLE
+
+  The script will return a random number for the connection which you
+  should give to the other part which needs to access your desktop.
+
+
+* Accessing the remote desktop (from the other client)
+
+  To access a remote desktop we need a VNC client. Make sure that *vncviewer*
+  is installed:
+  #+BEGIN_EXAMPLE
+  sudo apt-get install vncviewer
+  #+END_EXAMPLE
+
+  Then get the scipts from GitHub:
+  #+BEGIN_EXAMPLE
+  git clone https://github.com/dashohoxha/p2p.git p2p-vnc
+  #+END_EXAMPLE
+
+  Set the IP or DN of the middle server at ~p2p-vnc/client/config~:
+  #+BEGIN_EXAMPLE
+  ### the IP or DN of the middle server
+  server=127.0.0.1
+  #+END_EXAMPLE
+
+  Now connect to the remote desktop:
+  #+BEGIN_EXAMPLE
+  p2p-vnc/client/connec.sh
+  #+END_EXAMPLE
+
+  You will need to know the number of the connection that was created
+  by the remote desktop.
+
+
+* Closing a connection
+
+  From any (or both) of the clients, the connection can be closed with:
+  #+BEGIN_EXAMPLE
+  p2p-vnc/client/stop.sh
+  #+END_EXAMPLE
+  This will cleanup the keys on the server and close the programs that
+  were started locally (like x11vnc, vncviewer, etc.)
