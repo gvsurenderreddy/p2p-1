@@ -8,7 +8,7 @@ cd $(dirname $0)
 
 ### create a key pair for the connection and get the private key
 key=$(tempfile)
-echo -e "\n\n" | ssh -p 2201 -i create.key vnc@$server > $key 2>/dev/null
+echo -e "\n\n" | ssh -p 2201 -i keys/create.key vnc@$server > $key 2>/dev/null
 port=$(sed -n -e '1p' $key)
 
 ### start the tunnel for port-forwarding

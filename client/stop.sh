@@ -10,7 +10,7 @@ cd $(dirname $0)
 read -p "CONNECTION NUMBER: " port
 
 ### delete the corresponding keys on the server
-echo -e "$port\n" | ssh -p 2201 -i delete.key vnc@$server 2>/dev/null
+echo -e "$port\n" | ssh -p 2201 -i keys/delete.key vnc@$server 2>/dev/null
 
 ### kill processes
 kill -9 $(ps ax | grep ssh | grep $port | cut -d' ' -f1) 2>/dev/null
