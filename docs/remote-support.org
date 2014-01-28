@@ -71,7 +71,7 @@ a secure connection to a remote desktop.
   server on *B*:
   #+BEGIN_EXAMPLE
   ssh -p 2201 -t -R 5933:localhost:5900 vnc@middle-server
-  x11vnc -rfbport 5900 -localhost -display :0
+  x11vnc -rfbport 5900 -localhost
   #+END_EXAMPLE
   Then we start the VNC viewer on *A*:
   #+BEGIN_EXAMPLE
@@ -123,7 +123,7 @@ a secure connection to a remote desktop.
   #+BEGIN_EXAMPLE
   On B:
   ssh -p 2201 -t -R 5933:localhost:5900 -i vnc.key vnc@middle-server
-  x11vnc -rfbport 5900 -localhost -display :0
+  x11vnc -rfbport 5900 -localhost
 
   On A:
   ssh -p 2201 -t -L 5900:localhost:5933 -i vnc.key vnc@middle-server
