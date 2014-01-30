@@ -22,7 +22,9 @@ echo -e "\n\n" | ssh -p $port -i keys/create.key vnc@$server > $key 2>>$log
 conn=$(sed -n -e '1p' $key)
 
 ### start the tunnel for port-forwarding
-ssh -p $port -f -N -t -R $conn:localhost:5900 -i $key vnc@$server 2>>$log
+ssh="ssh -p $port -f -N -t"
+if [ $compress = 'yes' ]; then ssh="$ssh -C"; fi
+$ssh -R $conn:localhost:5900 -i $key vnc@$server 2>>$log
 
 ### start x11vnc
 x11vnc -bg -rfbport 5900 -localhost -nopw -q >>$log 2>&1

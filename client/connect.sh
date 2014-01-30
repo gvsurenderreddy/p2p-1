@@ -25,7 +25,9 @@ key=$(tempfile)
 echo -e "$conn\n" | ssh -p $port -i keys/get.key vnc@$server > $key 2>>$log
 
 ### start the tunnel for port-forwarding
-ssh -p $port -f -N -t -L 5900:localhost:$conn -i $key vnc@$server 2>>$log
+ssh="ssh -p $port -f -N -t"
+if [ $compress = 'yes' ]; then ssh="$ssh -C"; fi
+$ssh -L 5900:localhost:$conn -i $key vnc@$server 2>>$log
 
 ### start vncviewer
 vncviewer -encodings "copyrect tight zrle hextile" localhost:0 >>$log 2>&1

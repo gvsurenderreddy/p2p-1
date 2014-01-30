@@ -8,3 +8,8 @@ port=2201
 ### the log file (can be useful for debugging)
 #log=/dev/null
 log=p2p.log
+
+### compress the ssh connections
+### can be usefull only for slow connections
+#compress=yes
+compress=no
