@@ -13,6 +13,7 @@ read -p "CONNECTION NUMBER: " conn
 echo -e "$conn\n" | ssh -p $port -i keys/delete.key vnc@$server 2>$log
 
 ### kill processes
-kill -9 $(ps ax | grep ssh | grep $conn | cut -d' ' -f1) 2>>$log
+kill -9 $(ps ax | grep "$conn:localhost:" | sed -e 's/^ \+//' | cut -d' ' -f1) 2>>$log
+kill -9 $(ps ax | grep ":localhost:$conn" | sed -e 's/^ \+//' | cut -d' ' -f1) 2>>$log
 pkill -x x11vnc
 pkill -x vncviewer
