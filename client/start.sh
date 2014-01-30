@@ -27,7 +27,16 @@ if [ $compress = 'yes' ]; then ssh="$ssh -C"; fi
 $ssh -R $conn:localhost:5900 -i $key vnc@$server 2>>$log
 
 ### start x11vnc
-x11vnc -bg -rfbport 5900 -localhost -nopw -q >>$log 2>&1
+x11vnc="x11vnc -bg -nopw -q"
+if [ $window = 'yes' ]
+then
+    echo "Select a window with the mouse."
+    x11vnc="$x11vnc -sid pick"
+fi
+if [ $viewonly = 'yes' ]; then x11vnc="$x11vnc -viewonly"; fi
+if [ $shared = 'yes' ]; then x11vnc="$x11vnc -shared"; fi
+if [ $forever = 'yes' ]; then x11vnc="$x11vnc -forever"; fi
+$x11vnc -rfbport 5900 -localhost >>$log 2>&1
 
 ### output the connection number
 echo "

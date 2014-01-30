@@ -13,3 +13,22 @@ log=p2p.log
 ### can be usefull only for slow connections
 #compress=yes
 compress=no
+
+### share only a single window (not the whole desktop)
+### when this option is 'yes', the mouse will become
+### like a + and you will be able to select a window
+#window=yes
+window=no
+
+### if yes, then the desktop cannot be controlled remotely
+#viewonly=yes
+viewonly=no
+
+### more than one computer can connect at the same time
+#shared=yes
+shared=no
+
+### keep listening for more connections rather than exiting
+### as soon as the first client(s) disconnect
+#forever=yes
+forever=no
