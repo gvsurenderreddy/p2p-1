@@ -1,5 +1,5 @@
 
-* Remote Desktop Support with Peer-To-Peer VNC
+* Remote Desktop Support with P2P VNC
 
   VNC is a well-known tool for remote desktop view and control. The
   two computers establish a TCP connection so that one of them can
@@ -23,89 +23,217 @@
   middle server, and the connection between the two clients.
 
 
-* Installation of a middle server
+** Installation of a middle server
 
-  For more security and flexibility, the installation is done inside a
-  chroot environment (which is built with debootstrap):
+   For more security and flexibility, the installation is done inside a
+   chroot environment (which is built with debootstrap):
 
-  #+BEGIN_EXAMPLE
-  cd /var/chroot/
-  git clone https://github.com/dashohoxha/p2p.git
-  nohup nice p2p/server/install.sh P2P &
-  tail -f nohup.out
-  #+END_EXAMPLE
+   #+BEGIN_EXAMPLE
+   cd /var/chroot/
+   git clone https://github.com/dashohoxha/p2p.git
+   nohup nice p2p/server/install.sh P2P &
+   tail -f nohup.out
+   #+END_EXAMPLE
 
-  After the installation is done, you can start and stop the service
-  with:
-  #+BEGIN_EXAMPLE
-  service chroot-P2P stop
-  service chroot-P2P start
-  #+END_EXAMPLE
-
-
-* Sharing the desktop (on the client)
-
-  To share the desktop we need a VNC server. Make sure that *x11vnc*
-  is installed:
-  #+BEGIN_EXAMPLE
-  sudo apt-get install x11vnc
-  #+END_EXAMPLE
-
-  Then get the scipts from GitHub:
-  #+BEGIN_EXAMPLE
-  git clone https://github.com/dashohoxha/p2p.git p2p-vnc
-  chmod 600 p2p-vnc/client/keys/*.key
-  #+END_EXAMPLE
-
-  Set the IP or DN of the middle server at ~p2p-vnc/client/config~:
-  #+BEGIN_EXAMPLE
-  ### the IP or DN of the middle server
-  server=127.0.0.1
-  #+END_EXAMPLE
-
-  Now start a new peer-to-peer VNC connection:
-  #+BEGIN_EXAMPLE
-  p2p-vnc/client/start.sh
-  #+END_EXAMPLE
-
-  The script will return a random number for the connection which you
-  should give to the other part which needs to access your desktop.
+   After the installation is done, you can start and stop the service
+   with:
+   #+BEGIN_EXAMPLE
+   service chroot-P2P stop
+   service chroot-P2P start
+   #+END_EXAMPLE
 
 
-* Accessing the remote desktop (from the other client)
+** Sharing the desktop (on the client)
 
-  To access a remote desktop we need a VNC client. Make sure that *vncviewer*
-  is installed:
-  #+BEGIN_EXAMPLE
-  sudo apt-get install vncviewer
-  #+END_EXAMPLE
+   To share the desktop we need a VNC server. Make sure that *x11vnc*
+   is installed:
+   #+BEGIN_EXAMPLE
+   sudo apt-get install x11vnc
+   #+END_EXAMPLE
 
-  Then get the scipts from GitHub:
-  #+BEGIN_EXAMPLE
-  git clone https://github.com/dashohoxha/p2p.git p2p-vnc
-  chmod 600 p2p-vnc/client/keys/*.key
-  #+END_EXAMPLE
+   Then get the scipts from GitHub:
+   #+BEGIN_EXAMPLE
+   git clone https://github.com/dashohoxha/p2p.git p2p-vnc
+   chmod 600 p2p-vnc/client/keys/*.key
+   #+END_EXAMPLE
 
-  Set the IP or DN of the middle server at ~p2p-vnc/client/config~:
-  #+BEGIN_EXAMPLE
-  ### the IP or DN of the middle server
-  server=127.0.0.1
-  #+END_EXAMPLE
+   Set the the port and the IP (or DN) of the P2P server at
+   ~p2p-vnc/client/ssh.rc~:
+   #+BEGIN_EXAMPLE
+   ### the IP or DN of the p2p server
+   p2p_server=127.0.0.1
 
-  Now connect to the remote desktop:
-  #+BEGIN_EXAMPLE
-  p2p-vnc/client/connec.sh
-  #+END_EXAMPLE
+   ### the port of the sshd service in the p2p server
+   p2p_port=2201
+   #+END_EXAMPLE
 
-  You will need to know the number of the connection that was created
-  by the remote desktop.
+   Now share the VNC port and start an *x11vnc* server.
+   #+BEGIN_EXAMPLE
+   p2p-vnc/client/start_x11vnc.sh 
+
+   CONNECTION NUMBER: 17837
+
+   Give it to the remote part in order to access your desktop.
+   To stop the connection run: p2p-vnc/client/stop.sh 17837
+   #+END_EXAMPLE
+
+   The script will return a random number for the connection which you
+   should give to the other part which needs to access your desktop.
+
+   There are more options to try. Change them at the config file
+   *vnc.rc* or from the command line:
+   #+BEGIN_EXAMPLE
+   p2p-vnc/client/start_x11vnc.sh --help
+
+   Usage: p2p-vnc/client/start_x11vnc.sh [OPTIONS]
+
+   Share the VNC port and start an x11vnc server.
+   The options from command line override the settings
+   on the config file 'vnc.rc'.
+
+       --help             display this help screen
+       --vnc_port=<port>  set the VNC port (5900)
+       --window=yes       share a single window, not the whole desktop
+       --viewonly=yes     the desktop cannot be controlled remotely
+       --shared=yes       more than one computer can connect at the same time
+       --forever=yes      keep listening for more connections (don't exit
+			  when the first client(s) disconnect)
+   #+END_EXAMPLE
 
 
-* Closing a connection
+** Accessing the remote desktop (from the other client)
 
-  From any (or both) of the clients, the connection can be closed with:
-  #+BEGIN_EXAMPLE
-  p2p-vnc/client/stop.sh
-  #+END_EXAMPLE
-  This will cleanup the keys on the server and close the programs that
-  were started locally (like x11vnc, vncviewer, etc.)
+   To access a remote desktop we need a VNC client. Make sure that
+   *vncviewer* is installed:
+   #+BEGIN_EXAMPLE
+   sudo apt-get install vncviewer
+   #+END_EXAMPLE
+
+   Then get the scipts from GitHub:
+   #+BEGIN_EXAMPLE
+   git clone https://github.com/dashohoxha/p2p.git p2p-vnc
+   chmod 600 p2p-vnc/client/keys/*.key
+   #+END_EXAMPLE
+
+   Set the the port and the IP (or DN) of the P2P server at
+   ~p2p-vnc/client/ssh.rc~:
+   #+BEGIN_EXAMPLE
+   ### the IP or DN of the p2p server
+   p2p_server=127.0.0.1
+
+   ### the port of the sshd service in the p2p server
+   p2p_port=2201
+   #+END_EXAMPLE
+
+   Now connect to the remote VNC port and start *vncviewer*.
+   #+BEGIN_EXAMPLE
+   p2p-vnc/client/start_vncviewer.sh --conn=17837
+   #+END_EXAMPLE
+
+   You will need to know the number of the connection that was created
+   by the remote desktop.
+
+   See also the usage:
+   #+BEGIN_EXAMPLE
+   p2p-vnc/client/start_vncviewer.sh --help
+
+   Usage: p2p-vnc/client/start_vncviewer.sh [OPTIONS]
+
+   Connect to the remote VNC port and start vncviewer.
+   The options from command line override the settings
+   on the config file 'vnc.rc'.
+
+       --help             display this help screen
+       --vnc_port=<port>  set the VNC port (5900)
+       --conn=<conn_nr>   connection number to the remote desktop
+   #+END_EXAMPLE
+
+
+** Closing a connection
+
+   From any (or both) of the clients, the connection can be closed with:
+   #+BEGIN_EXAMPLE
+   p2p-vnc/client/stop.sh 17837
+   #+END_EXAMPLE
+   This will cleanup the keys on the server, close the ssh tunnels, and
+   close the programs that were started locally (x11vnc or vncviewer).
+
+
+* Other Use Cases
+
+** Sharing a single widow
+
+   Use the option =--window=yes= from command line (or set it on
+   ~vnc.rc~) to share only a single window (not the whole
+   desktop). When this option is 'yes', the mouse will become like a +
+   (cross-hair) and you will be able to select a window.
+
+** Make a demonstration to one or more people
+
+   Start *x11vnc* with options like these:
+   #+BEGIN_EXAMPLE
+   p2p-vnc/client/start_x11vnc.sh --viewonly=yes --shared=yes
+   #+END_EXAMPLE
+
+   The remote viewers will not be able to control your desktop (or
+   window) and more than one viewers will be able to connect.
+
+** Share the desktop permanently
+
+   Suppose that time after time you need to access the computer at
+   home remotely. Usually, after *vncviewer* is closed, *x11vnc* is
+   closed automatically. But if the option =--forever=yes= is
+   used, x11vnc will keep listening for more connections (after the
+   first client(s) disconnect).
+   #+BEGIN_EXAMPLE
+   p2p-vnc/client/start_x11vnc.sh --forever=yes
+   #+END_EXAMPLE
+   
+   *Note:* Keep in mind that a cron job on the P2P server will
+   automatically delete keys older than one day. Without the key, you
+   will not be able to access the desktop even if x11vnc is still
+   listening. If this is not what you want, try to fix this on the P2P
+   server (either stop the cron or make the period longer).
+
+   *Warning:* However, leaving permanent connections open for a long
+   time is not a good idea regarding the security. Sooner or later
+   somebody can find the connection number and can have access to your
+   desktop remotely. So, make sure to know what you are doing.
+
+** Share your local webserver
+
+   Usually web developers use a local webserver for building an
+   application.  What would you do to show the current prototype to
+   the customer or to another developer? You can share your desktop,
+   or you can share only the window of the browser. But you can also
+   share your local webserver (port 80 and 443).
+
+   It can be done like this:
+
+   + On you side you run:
+     #+BEGIN_EXAMPLE
+     sudo p2p-vnc/client/port_share.sh 80
+     46045
+     sudo p2p-vnc/client/port_share.sh 443
+     15915
+     #+END_EXAMPLE
+     You need *sudo* in this case because *80* and *443* are
+     privileged ports and can be forwarded only by root.
+ 
+   + On the other side, your partner should run:
+     #+BEGIN_EXAMPLE
+     sudo p2p-vnc/client/port_connect.sh 80 46045
+     sudo p2p-vnc/client/port_connect.sh 443 15915
+     #+END_EXAMPLE
+     The connection numbers are provided to him by you. He should make
+     sure that he does not have any local webserver running on ports
+     80 and 443. Now he can open =localhost= or =127.0.0.1= on his
+     browser and he will directly access your local webserver.
+
+   + To stop sharing, both of you can run:
+     #+BEGIN_EXAMPLE
+     sudo p2p-vnc/client/port_stop.sh 46045
+     sudo p2p-vnc/client/port_stop.sh 15915
+     #+END_EXAMPLE
+
+   The same way can be used for sharing other ports/services as well.

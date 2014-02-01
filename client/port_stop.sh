@@ -25,7 +25,7 @@ cd $(dirname $0)
 for opt in "$@"
 do
     case $opt in
-	-h|--help)     usage ;;
+	-h|--help)       usage ;;
 	--p2p_server=*)  p2p_server=${opt#*=} ;;
 	--p2p_port=*)    p2p_port=${opt#*=} ;;
 	*)
