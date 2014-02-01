@@ -5,10 +5,14 @@
 cd $(dirname $0)
 
 ### get the connection number
-read -p "CONNECTION NUMBER: " conn
+connection_number=$1
+if [ "$connection_number" = '' ]
+then
+    read -p "CONNECTION NUMBER: " connection_number
+fi
 
 ### stop sharing the port for this connection
-./port_stop.sh $conn
+./port_stop.sh $connection_number
 
 ### kill processes
 pkill -x x11vnc
