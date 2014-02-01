@@ -1,18 +1,8 @@
+#!/bin/bash
+### variables for the configuration of x11vnc
 
-### the IP or DN of the middle server
-server=127.0.0.1
-
-### the port of the sshd service
-port=2201
-
-### the log file (can be useful for debugging)
-#log=/dev/null
-log=p2p.log
-
-### compress the ssh connections
-### can be usefull only for slow connections
-#compress=yes
-compress=no
+### the port used for VNC
+vnc_port=5900
 
 ### share only a single window (not the whole desktop)
 ### when this option is 'yes', the mouse will become
@@ -32,3 +22,8 @@ shared=no
 ### as soon as the first client(s) disconnect
 #forever=yes
 forever=no
+
+### the log file (can be useful for debugging)
+#logfile=/dev/null
+logfile=p2p.log
+

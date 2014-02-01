@@ -1,0 +1,18 @@
+#!/bin/bash
+### variables for the configuration of a ssh tunnel
+
+### the IP or DN of the p2p server
+p2p_server=127.0.0.1
+
+### the port of the sshd service in the p2p server
+p2p_port=2201
+
+### compress the ssh connections
+### can be usefull only for slow connections
+### for fast connections it may make things worse
+#compress=yes
+compress=no
+
+### the log file (can be useful for debugging)
+logfile=p2p.log
+#logfile=/dev/null
