@@ -3,6 +3,7 @@
 function usage {
     echo "
 Usage: $0 [OPTIONS]
+
 Connect to the remote VNC port and start vncviewer.
 The options from command line override the settings
 on the config file 'vnc.rc'.

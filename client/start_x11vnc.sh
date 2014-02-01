@@ -3,6 +3,7 @@
 function usage {
     echo "
 Usage: $0 [OPTIONS]
+
 Share the VNC port and start an x11vnc server.
 The options from command line override the settings
 on the config file 'vnc.rc'.
