@@ -20,10 +20,10 @@
   order to establish a secure connection to a remote desktop.
 
   This project has some scripts that simplify the installation of a
-  middle server, and the connection between the two clients.
+  P2P server, and the connection between the two clients.
 
 
-** Installation of a middle server
+** Installation of a P2P server
 
    For more security and flexibility, the installation is done inside a
    chroot environment (which is built with debootstrap):
