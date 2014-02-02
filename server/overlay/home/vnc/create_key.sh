@@ -8,9 +8,15 @@ do
     port=$(shuf -i 1025-65535 -n 1)
 done
 
+### generated a random key name
+key=$(mcookie | head -c 10)
+
 ### generate the key pair
-file=keys/$port
+file=keys/$key
 echo -e "$file\n\n\n" | ssh-keygen -t rsa > /dev/null 2>&1
+
+### insert the port to the first line of the private key
+sed -e "1i $port" -i $file
 
 ### put some restrictions on the public key
 ### and append it to authorized_keys
@@ -18,6 +24,6 @@ restrictions='command="/bin/sleep 4294967295",no-agent-forwarding,no-user-rc,no-
 sed -e "s#^#$restrictions#" -i $file.pub
 cat $file.pub >> /home/vnc/.ssh/authorized_keys
 
-### output the port and the private key
-echo $port
+### output the private key
+echo $key
 cat $file

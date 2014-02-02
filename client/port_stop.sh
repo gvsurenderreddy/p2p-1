@@ -2,7 +2,7 @@
 
 function usage {
     echo "
-Usage: $0 [OPTIONS] <connection_number>
+Usage: $0 [OPTIONS] <key>
 
 Stop the P2P connection and close the ssh tunnels.
 The options from command line override the settings
@@ -30,20 +30,26 @@ do
 	--p2p_port=*)    p2p_port=${opt#*=} ;;
 	*)
             if [ ${opt:0:1} = '-' ]; then usage; fi
-            remote_port=$opt
+            key=$opt
             ;;
     esac
 done
 
 ### check the presence of the required arguments
-if [ "$remote_port" = '' ]
+if [ "$key" = '' ]
 then
-    echo -e "\nError: Required argument <connection_number> is missing."
+    echo -e "\nError: Required argument <key> is missing."
     usage
 fi
 
-### delete the corresponding keys on the server
-echo -e "$remote_port\n" | ssh -p $p2p_port -i keys/delete.key vnc@$p2p_server 2>$logfile
+### get the remote port from the private key
+keyfile=$(tempfile)
+echo -e "$key\n" | ssh -p $p2p_port -i keys/get.key vnc@$p2p_server > $keyfile 2>>$logfile
+remote_port=$(head -1 $keyfile)
+rm $keyfile
+
+### delete the key on the server
+echo -e "$key\n" | ssh -p $p2p_port -i keys/delete.key vnc@$p2p_server 2>$logfile
 
 ### kill ssh tunnels
 pid1=$(ps ax | grep "$remote_port:[lL]ocalhost:" | sed -e 's/^ \+//' | cut -d' ' -f1)

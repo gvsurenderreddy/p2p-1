@@ -10,7 +10,7 @@ on the config file 'vnc.rc'.
 
     --help             display this help screen
     --vnc_port=<port>  set the VNC port (5900)
-    --conn=<conn_nr>   connection number to the remote desktop
+    --key=<key>        key for connecting to the remote desktop
 "
     exit 0
 }
@@ -37,20 +37,20 @@ do
     case $opt in
 	-h|--help)     usage ;;
 	--vnc_port=*)  vnc_port=${opt#*=} ;;
-	--conn=*)      connection_number=${opt#*=} ;;
+	--key=*)       key=${opt#*=} ;;
 	*)             if [ ${opt:0:1} = '-' ]; then usage; fi ;;
     esac
 done
 
-### get the connection number
-if [ "$connection_number" = '' ]
+### get the key name
+if [ "$key" = '' ]
 then
-    echo "Enter the connection number of the remote desktop."
-    read -p "CONNECTION NUMBER: " connection_number
+    echo "Enter the key of the remote desktop."
+    read -p "KEY: " key
 fi
 
 ### connect to the remote VNC port
-./port_connect.sh $vnc_port $connection_number
+./port_connect.sh $vnc_port $key
 
 ### start vncviewer
 disp_nr=$(($vnc_port - 5900))

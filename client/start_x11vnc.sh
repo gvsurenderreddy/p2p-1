@@ -49,8 +49,8 @@ do
     esac
 done
 
-### share the vnc port and get the connection number
-read connection_number < <(./port_share.sh $vnc_port)
+### share the vnc port and get the key name
+read key < <(./port_share.sh $vnc_port)
 
 ### start x11vnc
 x11vnc="x11vnc -bg -nopw -q"
@@ -64,10 +64,10 @@ if [ $shared = 'yes' ]; then x11vnc="$x11vnc -shared"; fi
 if [ $forever = 'yes' ]; then x11vnc="$x11vnc -forever"; fi
 $x11vnc -rfbport $vnc_port -localhost >>$logfile 2>&1
 
-### output the connection number
+### output the key name
 echo "
-CONNECTION NUMBER: $connection_number
+KEY: $key
 
 Give it to the remote part in order to access your desktop.
-To stop the connection run: ./stop.sh $connection_number
+To stop the connection run: $(dirname $0)/stop.sh $key
 "

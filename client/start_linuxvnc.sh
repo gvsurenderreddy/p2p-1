@@ -47,13 +47,13 @@ do
     esac
 done
 
-### share the vnc port and get the connection number
-read connection_number < <(./port_share.sh $vnc_port)
+### share the vnc port and get the key name
+read key < <(./port_share.sh $vnc_port)
 echo "
-CONNECTION NUMBER: $connection_number
+KEY: $key
 
 Give it to the remote part in order to access your desktop.
-To stop the connection run: ./stop.sh $connection_number
+To stop the connection run: $(dirname $0)/stop.sh $key
 "
 
 ### start linuxvnc

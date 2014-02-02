@@ -1,4 +1,4 @@
 #!/bin/bash
-### return the key for a connection
-read -p "Enter connection number: " port
-cat /home/vnc/keys/$port
+### output a private key
+read -p "Enter key: " key
+cat /home/vnc/keys/$key

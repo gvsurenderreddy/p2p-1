@@ -2,7 +2,7 @@
 
 function usage {
     echo "
-Usage: $0 [OPTIONS] <local_port> <connection_number>
+Usage: $0 [OPTIONS] <local_port> <key>
 
 Connect a local port to a shared remote port through a ssh tunnel.
 The options from command line override the settings
@@ -35,9 +35,9 @@ do
             if [ "$local_port" = '' ]
 	    then
 		local_port=$opt
-	    elif [ "$remote_port" = '' ]
+	    elif [ "$key" = '' ]
             then
-		remote_port=$opt
+		key=$opt
 	    else
 		usage
             fi
@@ -51,15 +51,18 @@ then
     echo -e "\nError: Required argument <local_port> is missing."
     usage
 fi
-if [ "$remote_port" = '' ]
+if [ "$key" = '' ]
 then
-    echo -e "\nError: Required argument <connection_number> is missing."
+    echo -e "\nError: Required argument <key> is missing."
     usage
 fi
 
 ### get the private key of the connection
 keyfile=$(tempfile)
-echo -e "$remote_port\n" | ssh -p $p2p_port -i keys/get.key vnc@$p2p_server > $keyfile 2>>$logfile
+echo -e "$key\n" | ssh -p $p2p_port -i keys/get.key vnc@$p2p_server > $keyfile 2>>$logfile
+
+### get the remote port from the key file
+remote_port=$(head -1 $keyfile)
 
 ### start the tunnel for port-forwarding
 ssh="ssh -p $p2p_port -f -N -t"

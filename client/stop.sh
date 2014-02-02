@@ -4,15 +4,15 @@
 ### go to the script directory
 cd $(dirname $0)
 
-### get the connection number
-connection_number=$1
-if [ "$connection_number" = '' ]
+### get the key name
+key=$1
+if [ "$key" = '' ]
 then
-    read -p "CONNECTION NUMBER: " connection_number
+    read -p "KEY: " key
 fi
 
-### stop sharing the port for this connection
-./port_stop.sh $connection_number
+### stop sharing the port
+./port_stop.sh $key
 
 ### kill processes
 pkill -x x11vnc
