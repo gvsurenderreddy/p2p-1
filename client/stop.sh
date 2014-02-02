@@ -16,4 +16,5 @@ fi
 
 ### kill processes
 pkill -x x11vnc
+pkill -x linuxvnc
 pkill -x vncviewer
