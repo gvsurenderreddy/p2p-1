@@ -2,7 +2,7 @@
 
 CHROOT=/var/chroot/p2p
 
-CHROOT_SERVICES="ssh cron"
+CHROOT_SERVICES="ssh cron mini-httpd"
 MOUNT_POINTS="proc dev sys dev/pts"
 
 ### reverse a list of words given as parameter

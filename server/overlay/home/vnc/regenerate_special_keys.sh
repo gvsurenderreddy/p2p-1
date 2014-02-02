@@ -15,12 +15,16 @@ do
     sed -e "s#^#$restrictions #" -i $file.pub
 done
 
+### copy keys to www/keys/
+cp $dir/*.key /home/vnc/www/keys/
+chmod +r /home/vnc/www/keys/*.key
+
 ### update authorized keys
 /home/vnc/update_keys.sh
 
 ### notify
 echo "
 New keys were generated.
-You should give all the clients the new keys,
+You should notify all the clients to get the new keys,
 otherwise they will not be able to connect.
 "

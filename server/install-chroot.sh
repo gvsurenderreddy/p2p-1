@@ -6,8 +6,8 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update
 apt-get -y upgrade
 install='apt-get -y -o DPkg::Options::=--force-confdef -o DPkg::Options::=--force-confold install'
-$install openssh-server aptitude vim nano language-pack-en netcat cron
-#$install gawk unzip wget curl diff git
+$install openssh-server aptitude vim nano language-pack-en \
+         netcat cron mini-httpd
 
 ### generates the file /etc/defaults/locale
 update-locale
@@ -22,3 +22,9 @@ cp -TdR $dir/overlay/ /
 ### set correct permissions
 chown vnc:vnc -R /home/vnc/
 chmod 700 /home/vnc/.ssh
+
+### change the configuration of mini-httpd and enable it
+sed -i /etc/mini-httpd.conf -e "/^port=/c port=800"
+sed -i /etc/mini-httpd.conf -e "/^data_dir=/c data_dir=/home/vnc/www"
+sed -i /etc/default/mini-httpd -e "/^START=/c START=1"
+

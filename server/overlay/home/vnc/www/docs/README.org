@@ -1,11 +1,10 @@
 #+OPTIONS: num:t toc:nil H:2 ^:nil f:nil TeX:nil LaTeX:nil
-#+STYLE: <link href="docs/css/org.css" rel="stylesheet" type="text/css"/>
+#+STYLE: <link href="css/org.css" rel="stylesheet" type="text/css"/>
 
 #+TITLE: Remote Desktop Support with P2P VNC
 #+AUTHOR: Dashamir Hoxha
 #+EMAIL: dashohoxha@gmail.com
 #+DATE: 02 February 2014
-
 
   VNC is a well-known tool for remote desktop view and control. The
   two computers establish a TCP connection so that one of them can
@@ -117,7 +116,7 @@
    sudo apt-get install vncviewer
    #+END_EXAMPLE
 
-   Then get the scripts from GitHub:
+   Then get the Spitz from GitHub:
    #+BEGIN_EXAMPLE
    git clone https://github.com/dashohoxha/p2p.git p2p-vnc
    chmod 600 p2p-vnc/client/keys/*.key
