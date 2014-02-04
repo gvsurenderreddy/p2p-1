@@ -18,7 +18,7 @@ service ssh restart
 ### update www data
 ### if mini-httpd is running, clients can get the port from it
 echo $port > /home/vnc/www/port
-set -i /home/vnc/www/index.html \
+sed -i /home/vnc/www/index.html \
     -e "s#<strong>port=[0-9]\+</strong>#<strong>port=$port</strong>#"
 
 ### notify
