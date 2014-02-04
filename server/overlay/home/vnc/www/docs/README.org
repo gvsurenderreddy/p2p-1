@@ -64,7 +64,7 @@
    chmod 600 p2p-vnc/client/keys/*.key
    #+END_EXAMPLE
 
-   Set the the port and the IP (or DN) of the P2P server at
+   Set the port and the IP (or DN) of the P2P server at
    ~p2p-vnc/client/ssh.rc~:
    #+BEGIN_EXAMPLE
    ### the IP or DN of the p2p server
@@ -116,7 +116,7 @@
    sudo apt-get install vncviewer
    #+END_EXAMPLE
 
-   Then get the Spitz from GitHub:
+   Then get the scripts from GitHub:
    #+BEGIN_EXAMPLE
    git clone https://github.com/dashohoxha/p2p.git p2p-vnc
    chmod 600 p2p-vnc/client/keys/*.key

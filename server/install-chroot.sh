@@ -22,9 +22,3 @@ cp -TdR $dir/overlay/ /
 ### set correct permissions
 chown vnc:vnc -R /home/vnc/
 chmod 700 /home/vnc/.ssh
-
-### change the configuration of mini-httpd and enable it
-sed -i /etc/mini-httpd.conf -e "/^port=/c port=800"
-sed -i /etc/mini-httpd.conf -e "/^data_dir=/c data_dir=/home/vnc/www"
-sed -i /etc/default/mini-httpd -e "/^START=/c START=1"
-
