@@ -74,9 +74,5 @@ update-rc.d $script_name disable  # it will not start automatically on reboot
 ### display the name of the chroot on the prompt
 echo $(basename $chroot_dir) > $target_dir/etc/debian_chroot
 
-### customize the configuration of the chroot system
-#chroot $target_dir /tmp/install/config.sh
-#chroot $target_dir rm -rf /tmp/install
-
 ### stop the services inside chroot
-#$init_script stop
+$init_script stop 2> /dev/null
