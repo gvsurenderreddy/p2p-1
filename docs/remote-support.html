@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+lang="en" xml:lang="en">
+<head>
+<title>Remote Desktop Support with VNC</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="22 January 2014"/>
+<meta name="author" content="Dashamir Hoxha"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<link href="css/org.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+
+<h1 class="title">Remote Desktop Support with VNC</h1>
+
+
+
+
+<p>
+VNC is a well-known tool for remote desktop view and control. The two
+computers establish a TCP connection so that one of them can access
+the display of the other. However, almost always these two computers
+are behind a firewall/router and do not have a real IP to be accessed
+from the Internet. In such a case one of them can do <b>port forwarding</b>
+on the router/firewall and this would allow the connection to be
+established. The problem is that more often than not, none of the
+parts that want to establish such a remote connection have access to
+the firewall that separates/protects it from the real internet.
+Sometimes it can even be several levels deep behind the firewall
+(several layers of firewalls). However, if you have access to an
+external server (for example a server in the cloud) there is still a
+workaround and things can be fixed to work. Here I will explain the
+tricks and hacks that can be used in such a case in order to establish
+a secure connection to a remote desktop.
+</p>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">The situation </a></li>
+<li><a href="#sec-2">Basic setup </a></li>
+<li><a href="#sec-3">Using a private-public key pair for the ssh connections </a></li>
+<li><a href="#sec-4">Making it more secure </a></li>
+<li><a href="#sec-5">Referencies </a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1">The situation </h2>
+<div class="outline-text-2" id="text-1">
+
+
+<p>
+Let's say that we have a computer <b>A</b> that wants to connect to the
+desktop of a computer <b>B</b>. Both of them are behind a NAT
+router/firewall and cannot modify its settings. However both of them
+can access a third computer <b>C</b> that is somewhere on the cloud and
+has a real IP.
+</p>
+<p>
+It is possible to use <b>C</b> as a redirecter of the traffic, so that
+both computers <b>A</b> and <b>B</b> can establish a direct (peer-to-peer)
+connection between them. This is done using the wonderful features
+for tunneling and port-forwarding of the <b>SSH</b> protocol. What is
+more, this connection will be encrypted and secure, which is the
+main feature of the <b>SSH</b> protocol.
+</p>
+<p>
+I will describe in the other sections what should be done in each of
+the computers in order to setup such a connection.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2">Basic setup </h2>
+<div class="outline-text-2" id="text-2">
+
+
+<p>
+On <b>A</b> we need to have a VNC client. Let's install <b>vncviewer</b>:
+</p>
+
+
+<pre class="example">sudo apt-get install vncviewer
+</pre>
+
+
+
+
+<p>
+On <b>B</b> we need to have a VNC server. Let's install <b>x11vnc</b>:
+</p>
+
+
+<pre class="example">sudo apt-get install x11vnc
+</pre>
+
+
+
+
+<p>
+To connect from <b>A</b> to <b>C</b> and from <b>B</b> to <b>C</b> we can use any
+existing account on <b>C</b>. However it is better to create a new one.
+Let's call it <b>vnc</b>:
+</p>
+
+
+<pre class="example">sudo adduser vnc
+</pre>
+
+
+
+
+<p>
+Let's assume that there is a <b>sshd</b> server running on <b>C</b>
+(otherwise there is no way to access it), and let's say that it is
+running on the port <b>2201</b>. We will refer to it as <b>middle-server</b>
+(which can be an IP or a domain name).
+</p>
+<p>
+To access the desktop of <b>B</b> from <b>A</b>, we first start the VNC
+server on <b>B</b>:
+</p>
+
+
+<pre class="example">ssh -p 2201 -t -R 5933:localhost:5900 vnc@middle-server
+x11vnc -rfbport 5900 -localhost
+</pre>
+
+
+
+<p>
+Then we start the VNC viewer on <b>A</b>:
+</p>
+
+
+<pre class="example">ssh -p 2201 -t -L 5900:localhost:5933 vnc@middle-server
+vncviewer -encodings "copyrect tight zrle hextile" localhost:0
+</pre>
+
+
+
+
+<p>
+<b>Note:</b> In both cases above, the <b>ssh</b> command and the other
+command are given on separate terminal tabs. The <b>ssh</b> command
+creates a ssh tunnel to <b>C</b> for the VNC port 5900, which is
+mapped to the port 5933 on <b>C</b>.
+</p>
+<p>
+Now we can enjoy the access to the remote desktop.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3">Using a private-public key pair for the ssh connections </h2>
+<div class="outline-text-2" id="text-3">
+
+
+<p>
+The <b>SSH</b> protocol allows authentication by a private-publik key
+pair. This would be more convenient because this way we don't have
+to remember the passsword. Also we can restrict the ssh access only
+for what we need it: tunneling and port-forwarding, and prohibit
+login etc. 
+</p>
+<p>
+Let's create a private-public key pair for user <code>vnc</code> on <b>C</b>:
+</p>
+
+
+<pre class="example">su - vnc
+mkdir ~/.ssh
+chmod 700 ~/.ssh
+ssh-keygen -t rsa
+
+ls -al .ssh
+total 16
+drwx------ 2 vnc vnc 4096 Jan 22 09:31 .
+drwxr-xr-x 3 vnc vnc 4096 Jan 22 09:31 ..
+-rw------- 1 vnc vnc 1675 Jan 22 09:31 id_rsa
+-rw-r--r-- 1 vnc vnc  394 Jan 22 09:31 id_rsa.pub
+</pre>
+
+
+
+
+<p>
+The public key <code>id_rsa.pub</code> should go to the file <code>authorized_keys</code>,
+and the private key <code>id_rsa</code> will be used by <b>A</b> and <b>B</b> to login:
+</p>
+
+
+<pre class="example">cd ~/.ssh/
+cp id_rsa.pub authorized_keys
+cp id_rsa vnc.key
+</pre>
+
+
+
+
+<p>
+Now we can copy <code>vnc.key</code> to <b>A</b> and <b>B</b> and then run the commands
+like this:
+</p>
+
+
+<pre class="example">On B:
+ssh -p 2201 -t -R 5933:localhost:5900 -i vnc.key vnc@middle-server
+x11vnc -rfbport 5900 -localhost
+
+On A:
+ssh -p 2201 -t -L 5900:localhost:5933 -i vnc.key vnc@middle-server
+vncviewer -encodings "copyrect tight zrle hextile" localhost:0
+</pre>
+
+
+
+
+<p>
+This time no password will be asked for establishing the ssh
+connection.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4">Making it more secure </h2>
+<div class="outline-text-2" id="text-4">
+
+
+<p>
+When we run the <b>ssh</b> command, by default it opens a shell on <b>C</b>
+where you can run commands, besides creating a tunnel and doing
+port-forwarding. Even if the <b>vnc</b> account that we use for this
+purpose may have limited access rights on <b>C</b>, this still is a
+potential threat (security problem), especially if we don't know or
+cannot trust the person that is sharing the desktop.
+</p>
+<p>
+Fortunately, it is possible to limit the SSH features that each key
+can use. We do this by modifying the file <code>authorized_keys</code> to look
+like this:
+</p>
+
+
+<pre class="example">command="/bin/sleep 4294967295",no-agent-forwarding,no-user-rc,
+no-X11-forwarding,permitopen="localhost:5933" ssh-rsa B3NzaC1...
+</pre>
+
+
+
+<p>
+The long list of no-xyz statements disallow it from doing just
+about anything except connect to a VNC server.
+</p>
+
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5">Referencies </h2>
+<div class="outline-text-2" id="text-5">
+
+<ul>
+<li>
+<a href="http://blog.markloiseau.com/2012/03/vnc-current-session/">http://blog.markloiseau.com/2012/03/vnc-current-session/</a>
+</li>
+<li>
+<a href="https://help.ubuntu.com/community/VNC">https://help.ubuntu.com/community/VNC</a>
+</li>
+<li>
+<a href="http://www.karlrunge.com/x11vnc/faq.html">http://www.karlrunge.com/x11vnc/faq.html</a>
+</li>
+</ul>
+</div>
+</div>
+<div id="postamble">
+<p class="author"> Author: Dashamir Hoxha
+<a href="mailto:dashohoxha@gmail.com">&lt;dashohoxha@gmail.com&gt;</a>
+</p>
+<p class="date"> Date: 22 January 2014</p>
+<p class="creator">HTML generated by org-mode 6.33x in emacs 23</p>
+</div>
+</div>
+</body>
+</html>
