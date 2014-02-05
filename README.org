@@ -61,17 +61,11 @@
    Then get the scripts from GitHub:
    #+BEGIN_EXAMPLE
    git clone https://github.com/dashohoxha/p2p.git p2p-vnc
-   chmod 600 p2p-vnc/client/keys/*.key
    #+END_EXAMPLE
 
-   Set the port and the IP (or DN) of the P2P server at
-   ~p2p-vnc/client/ssh.rc~:
+   Set the P2P server that you want to use, for example:
    #+BEGIN_EXAMPLE
-   ### the IP or DN of the p2p server
-   p2p_server=127.0.0.1
-
-   ### the port of the sshd service in the p2p server
-   p2p_port=2201
+   p2p-vnc/client/use.sh p2p.btranslator.org
    #+END_EXAMPLE
 
    Now share the VNC port and start an *x11vnc* server.
@@ -119,22 +113,16 @@
    Then get the scripts from GitHub:
    #+BEGIN_EXAMPLE
    git clone https://github.com/dashohoxha/p2p.git p2p-vnc
-   chmod 600 p2p-vnc/client/keys/*.key
    #+END_EXAMPLE
 
-   Set the the port and the IP (or DN) of the P2P server at
-   ~p2p-vnc/client/ssh.rc~:
+   Set the P2P server that you want to use, for example:
    #+BEGIN_EXAMPLE
-   ### the IP or DN of the p2p server
-   p2p_server=127.0.0.1
-
-   ### the port of the sshd service in the p2p server
-   p2p_port=2201
+   p2p-vnc/client/use.sh p2p.btranslator.org
    #+END_EXAMPLE
 
    Now connect to the remote VNC port and start *vncviewer*.
    #+BEGIN_EXAMPLE
-   p2p-vnc/client/start_vncviewer.sh --key=b8e1f1e779
+   p2p-vnc/client/start_vncviewer.sh b8e1f1e779
    #+END_EXAMPLE
 
    You will need to know the number of the key that was created by the
@@ -144,7 +132,7 @@
    #+BEGIN_EXAMPLE
    p2p-vnc/client/start_vncviewer.sh --help
 
-   Usage: p2p-vnc/client/start_vncviewer.sh [OPTIONS]
+   Usage: p2p-vnc/client/start_vncviewer.sh [OPTIONS] [<key>]
 
    Connect to the remote VNC port and start vncviewer.
    The options from command line override the settings
@@ -152,7 +140,6 @@
 
        --help             display this help screen
        --vnc_port=<port>  set the VNC port (5900)
-       --key=<key>        key for connecting to the remote desktop
    #+END_EXAMPLE
 
 
