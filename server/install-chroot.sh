@@ -18,7 +18,7 @@ useradd --system --create-home vnc
 
 ### copy overlay files over to the system
 dir=$(dirname $0)
-cp -TRL $dir/overlay/ /
+cp -TdR $dir/overlay/ /
 
 ### set correct permissions
 chown vnc:vnc -R /home/vnc/

@@ -6,23 +6,15 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <h1>P2P Server</h1>
+    <h1><a href="https://github.com/dashohoxha/p2p">P2P Server</a></h1>
 
     <h2>Installation on the client</h2>
     <ol>
       <li>Get the scripts from GitHub:
 	<pre>git clone https://github.com/dashohoxha/p2p.git p2p-vnc</pre>
       </li>
-      <li>Make sure that the keys have proper permissions:
-	<pre>chmod 600 p2p-vnc/client/keys/*.key</pre>
-      </li>
-      <li>Set the port and the IP (or DN) of the P2P server at
-	<code>p2p-vnc/client/ssh.rc</code>:
-	<pre>### the IP or DN of the p2p server
-p2p_server=127.0.0.1
-
-### the port of the sshd service in the p2p server
-p2p_port=2201</pre>
+      <li>Set the P2P server that you want to use:
+	<pre>p2p-vnc/client/use.sh p2p.btranslator.org</pre>
       </li>
     </ol>
 
@@ -160,16 +152,16 @@ sudo p2p-vnc/client/port_stop.sh c9277c986d</pre>
     <h2>Other Docs</h2>
     <ul>
       <li>
-	<a href="docs/README.html">README</a>
-	( <a href="docs/README.pdf">PDF</a>,
-          <a href="docs/README.odt">ODT</a>,
-	  <a href="docs/README.org">ORG</a> )
+	<a href="http://dashohoxha.github.io/p2p/docs/README.html">README</a>
+	( <a href="http://dashohoxha.github.io/p2p/docs/README.pdf">PDF</a>,
+          <a href="http://dashohoxha.github.io/p2p/docs/README.odt">ODT</a>,
+	  <a href="http://dashohoxha.github.io/p2p/docs/README.org">ORG</a> )
       </li>
       <li>
-	<a href="docs/remote-support.html">remote-support</a>
-	( <a href="docs/remote-support.pdf">PDF</a>,
-          <a href="docs/remote-support.odt">ODT</a>,
-	  <a href="docs/remote-support.org">ORG</a> )
+	<a href="http://dashohoxha.github.io/p2p/docs/remote-support.html">remote-support</a>
+	( <a href="http://dashohoxha.github.io/p2p/docs/remote-support.pdf">PDF</a>,
+          <a href="http://dashohoxha.github.io/p2p/docs/remote-support.odt">ODT</a>,
+	  <a href="http://dashohoxha.github.io/p2p/docs/remote-support.org">ORG</a> )
       </li>
     </ul>
   </body>
