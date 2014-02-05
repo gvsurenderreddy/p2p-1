@@ -4,6 +4,9 @@
 ### go to the script directory
 cd $(dirname $0)
 
+### include config file
+. ./ssh.rc
+
 ### get the arguments
 if [ "$1" = '' ]
 then

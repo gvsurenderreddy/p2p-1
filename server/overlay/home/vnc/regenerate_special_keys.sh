@@ -7,7 +7,7 @@ dir=/home/vnc/special_keys
 for key in create delete get
 do
     file=$dir/$key
-    echo -e "$file\n\n\n" | ssh-keygen -t rsa > /dev/null 2>&1
+    ssh-keygen -t rsa -f $file -q -N ''
     mv $file $file.key
 
     ### put restrictions on the public key

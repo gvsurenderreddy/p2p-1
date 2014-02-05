@@ -13,7 +13,7 @@ key=$(mcookie | head -c 10)
 
 ### generate the key pair
 file=keys/$key
-echo -e "$file\n\n\n" | ssh-keygen -t rsa > /dev/null 2>&1
+ssh-keygen -t rsa -f $file -q -N ''
 
 ### insert the port to the first line of the private key
 sed -e "1i $port" -i $file
