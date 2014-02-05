@@ -170,23 +170,17 @@ Then get the scripts from GitHub:
 
 
 <pre class="example">git clone https://github.com/dashohoxha/p2p.git p2p-vnc
-chmod 600 p2p-vnc/client/keys/*.key
 </pre>
 
 
 
 
 <p>
-Set the the port and the IP (or DN) of the P2P server at
-<code>p2p-vnc/client/ssh.rc</code>:
+Set the P2P server that you want to use, for example:
 </p>
 
 
-<pre class="example">### the IP or DN of the p2p server
-p2p_server=127.0.0.1
-
-### the port of the sshd service in the p2p server
-p2p_port=2201
+<pre class="example">p2p-vnc/client/use.sh p2p.btranslator.org
 </pre>
 
 
@@ -261,28 +255,22 @@ To access a remote desktop we need a VNC client. Make sure that
 
 
 <p>
-Then get the Spitz from GitHub:
+Then get the scripts from GitHub:
 </p>
 
 
 <pre class="example">git clone https://github.com/dashohoxha/p2p.git p2p-vnc
-chmod 600 p2p-vnc/client/keys/*.key
 </pre>
 
 
 
 
 <p>
-Set the the port and the IP (or DN) of the P2P server at
-<code>p2p-vnc/client/ssh.rc</code>:
+Set the P2P server that you want to use, for example:
 </p>
 
 
-<pre class="example">### the IP or DN of the p2p server
-p2p_server=127.0.0.1
-
-### the port of the sshd service in the p2p server
-p2p_port=2201
+<pre class="example">p2p-vnc/client/use.sh p2p.btranslator.org
 </pre>
 
 
@@ -293,7 +281,7 @@ Now connect to the remote VNC port and start <b>vncviewer</b>.
 </p>
 
 
-<pre class="example">p2p-vnc/client/start_vncviewer.sh --key=b8e1f1e779
+<pre class="example">p2p-vnc/client/start_vncviewer.sh b8e1f1e779
 </pre>
 
 
@@ -310,7 +298,7 @@ See also the usage:
 
 <pre class="example">p2p-vnc/client/start_vncviewer.sh --help
 
-Usage: p2p-vnc/client/start_vncviewer.sh [OPTIONS]
+Usage: p2p-vnc/client/start_vncviewer.sh [OPTIONS] [&lt;key&gt;]
 
 Connect to the remote VNC port and start vncviewer.
 The options from command line override the settings
@@ -318,7 +306,6 @@ on the config file 'vnc.rc'.
 
     --help             display this help screen
     --vnc_port=&lt;port&gt;  set the VNC port (5900)
-    --key=&lt;key&gt;        key for connecting to the remote desktop
 </pre>
 
 
