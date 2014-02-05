@@ -48,8 +48,8 @@ fi
 ### the key name, remote port and the private key
 keyfile=$(tempfile)
 ssh -p $p2p_port -i keys/create.key vnc@$p2p_server > $keyfile 2>>$logfile
-key=$(sed -n -e '1p' $keyfile)
-remote_port=$(sed -n -e '2p' $keyfile)
+key=$(sed -n -e '1p' $keyfile | tr -d [:space:])
+remote_port=$(sed -n -e '2p' $keyfile | tr -d [:space:])
 
 ### start the tunnel for port-forwarding
 ssh="ssh -p $p2p_port -f -N -t"
