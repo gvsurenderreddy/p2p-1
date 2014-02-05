@@ -2,7 +2,7 @@
 
 function usage {
     echo "
-Usage: $0 [OPTIONS]
+Usage: $0 [OPTIONS] [<key>]
 
 Connect to the remote VNC port and start vncviewer.
 The options from command line override the settings
@@ -10,7 +10,6 @@ on the config file 'vnc.rc'.
 
     --help             display this help screen
     --vnc_port=<port>  set the VNC port (5900)
-    --key=<key>        key for connecting to the remote desktop
 "
     exit 0
 }
@@ -37,8 +36,10 @@ do
     case $opt in
 	-h|--help)     usage ;;
 	--vnc_port=*)  vnc_port=${opt#*=} ;;
-	--key=*)       key=${opt#*=} ;;
-	*)             if [ ${opt:0:1} = '-' ]; then usage; fi ;;
+	*)             
+	    if [ ${opt:0:1} = '-' ]; then usage; fi
+	    key=$opt
+	    ;;
     esac
 done
 
