@@ -13,14 +13,16 @@
       built with debootstrap):
       <pre>cd /var/chroot/
 git clone https://github.com/dashohoxha/p2p.git
-nohup nice p2p/server/install.sh P2P &
+cp p2p/install/settings.sh p2p/cfg.sh
+vim p2p/cfg.sh
+nohup nice p2p/install/chroot.sh p2p/cfg.sh &
 tail -f nohup.out</pre>
     </p>
 
     <p>After the installation is done, you can start and stop the
       service with:
-      <pre>service chroot-P2P stop
-service chroot-P2P start</pre>
+      <pre>/etc/init.d/chroot-P2P stop
+/etc/init.d/chroot-P2P start</pre>
     </p>
 
     <h2>Installation on the client</h2>
