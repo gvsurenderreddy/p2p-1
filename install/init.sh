@@ -2,7 +2,7 @@
 
 CHROOT=/var/chroot/p2p
 
-CHROOT_SERVICES="ssh cron mini-httpd"
+CHROOT_SERVICES="ssh mini-httpd"
 MOUNT_POINTS="proc dev sys dev/pts"
 
 ### reverse a list of words given as parameter
@@ -23,23 +23,36 @@ case "$1" in
 	do
 	    mount -o bind /$DIR $CHROOT/$DIR
 	done
+	chroot $CHROOT/ mount -a
 
 	# start the services inside the CHROOT
-	for SRV in $CHROOT_SERVICES
+	for service in $CHROOT_SERVICES
 	do
-	    chroot $CHROOT/ service $SRV start
+	    chroot $CHROOT/ /etc/init.d/$service start
 	done
+
+	# start cron
+	chroot $CHROOT/ cron
 
         ### update the list of the authorized keys
         chroot $CHROOT/ /home/vnc/update_keys.sh
 	;;
 
     stop)
+	# stop cron
+	chroot $CHROOT/ killall cron
+
 	# stop the services inside the CHROOT
-	for SRV in $(reverse "$CHROOT_SERVICES")
+	for service in $(reverse "$CHROOT_SERVICES")
 	do
-	    chroot $CHROOT/ service $SRV stop
+	    chroot $CHROOT/ /etc/init.d/$service stop
 	done
+
+        # kill any remaining processes that are still running on CHROOT
+        chroot_pids=$(for p in /proc/*/root; do ls -l $p; done | grep $CHROOT | cut -d'/' -f3)
+	test -z "$chroot_pids" || (kill -9 $chroot_pids; sleep 2)
+
+	chroot $CHROOT/ umount -a
 
 	# umount /proc etc. from the CHROOT
 	for DIR in $(reverse "$MOUNT_POINTS")
@@ -47,7 +60,6 @@ case "$1" in
 	    umount $CHROOT/$DIR
 	done
 	;;
-
     *)
 	echo " * Usage: $0 {start|stop}"
 esac

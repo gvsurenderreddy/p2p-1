@@ -38,15 +38,17 @@
    #+BEGIN_EXAMPLE
    cd /var/chroot/
    git clone https://github.com/dashohoxha/p2p.git
-   nohup nice p2p/server/install.sh P2P &
+   cp p2p/install/settings.sh p2p/cfg.sh
+   vim p2p/cfg.sh
+   nohup nice p2p/install/chroot.sh p2p/cfg.sh &
    tail -f nohup.out
    #+END_EXAMPLE
 
    After the installation is done, you can start and stop the service
    with:
    #+BEGIN_EXAMPLE
-   service chroot-P2P stop
-   service chroot-P2P start
+   /etc/init.d/chroot-P2P stop
+   /etc/init.d/chroot-P2P start
    #+END_EXAMPLE
 
 
