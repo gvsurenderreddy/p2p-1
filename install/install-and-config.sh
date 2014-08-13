@@ -34,7 +34,9 @@ sed -i /etc/ssh/sshd_config \
     -e 's/^PermitRootLogin/#PermitRootLogin/' \
     -e 's/^PasswordAuthentication/#PasswordAuthentication/' \
     -e 's/^X11Forwarding/#X11Forwarding/' \
-    -e 's/^UseLogin/#UseLogin/'
+    -e 's/^UseLogin/#UseLogin/' \
+    -e 's/^AllowUsers/#AllowUsers/' \
+    -e 's/^Banner/#Banner/'
 
 sed -i /etc/ssh/sshd_config \
     -e '/^### p2p config/,$ d'
@@ -62,6 +64,7 @@ sed -i /etc/mini-httpd.conf \
     -e '/^### p2p config/,$ d'
 
 cat <<EOF >> /etc/mini-httpd.conf
+### p2p config
 host=0.0.0.0
 port=$httpd_port
 chroot
