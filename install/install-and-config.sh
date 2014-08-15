@@ -2,11 +2,27 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
+### read the settings if they are given
+settings=$1
+if test -f $settings
+then
+    set -a
+    source $settings
+    set +a
+fi
+
+### update /etc/apt/sources.list
+cat << EOF > /etc/apt/sources.list
+deb $apt_mirror $suite main restricted universe multiverse
+deb $apt_mirror $suite-updates main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu $suite-security main restricted universe multiverse
+EOF
+
 ### upgrade and install other needed packages
 apt-get update
 apt-get -y upgrade
 install='apt-get -y -o DPkg::Options::=--force-confdef -o DPkg::Options::=--force-confold install'
-$install openssh-server netcat cron mini-httpd
+$install openssh-server netcat cron mini-httpd supervisor
 initctl reload-configuration
 
 ### generates the file /etc/defaults/locale
@@ -26,7 +42,7 @@ chmod 700 /home/vnc/.ssh
 
 ### customize the configuration of the chroot system
 /home/vnc/regenerate_special_keys.sh
-/home/vnc/change_sshd_port.sh 2201
+/home/vnc/change_sshd_port.sh $sshd_port
 
 ### customize the configuration of sshd
 sed -i /etc/ssh/sshd_config \
@@ -75,6 +91,7 @@ sed -i /etc/default/mini-httpd \
     -e '/^START/ c START=1'
 
 ### customize the shell prompt
+echo $target > /etc/debian_chroot
 sed -i /root/.bashrc \
     -e '/^#force_color_prompt=/c force_color_prompt=yes' \
     -e '/^# get the git branch/,+4 d'

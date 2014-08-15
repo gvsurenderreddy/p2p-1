@@ -86,9 +86,6 @@ mount -o bind /proc $target/proc
 chroot $target apt-get update
 chroot $target apt-get -y install ubuntu-minimal
 
-### display the name of the chroot on the prompt
-echo $target > $target/etc/debian_chroot
-
 ### copy the local git repository to the target dir
 export code_dir=/usr/local/src
 chroot $target mkdir -p $code_dir
