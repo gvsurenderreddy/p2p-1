@@ -1,12 +1,12 @@
 #!/bin/bash
 ### Install a new chrooted server from scratch, with debootstrap.
 
-source=$(basename $(dirname $(dirname $0)))
+source_dir=$(dirname $(dirname $0))
 
 function usage {
     echo "
 Usage: $0 [OPTIONS] <settings> [options]
-Install $source inside a chroot in the target directory.
+Install $source_dir inside a chroot in another directory.
 
     <settings>    file of installation/configuration settings
     --target=D    target dir where the system will be installed
@@ -56,17 +56,11 @@ then
     usage
 fi
 
-### check that the code of $source does exist
-if ! test -d $source
-then
-    echo "Fatal error: '$source' does not exist."
-    exit 1
-fi
-
 ### make sure that we are using the right version of install scripts
-cd $source/
+current_dir=$(pwd)
+cd $source_dir/
 git checkout $git_branch && git pull origin $git_branch
-cd ..
+cd $current_dir
 
 ### install debootstrap dchroot
 apt-get install -y debootstrap dchroot
@@ -89,15 +83,17 @@ chroot $target apt-get -y install ubuntu-minimal
 ### copy the local git repository to the target dir
 export code_dir=/usr/local/src
 chroot $target mkdir -p $code_dir
-cp -a $source $target/$code_dir
+cp -a $source_dir $target/$code_dir/
 
 ### run install/config scripts
-chroot $target $code_dir/$source/install/install-and-config.sh
+source=$(basename $source_dir)
+code_dir=$code_dir/$source
+chroot $target $code_dir/install/install-and-config.sh
 
 ### create an init script
-template_init=$source/install/init.sh
+template_init=$source_dir/install/init.sh
 init_script="/etc/init.d/chroot-$target"
-chroot_dir="$(pwd)/$target"
+chroot_dir="$current_dir/$target"
 sed -e "/^CHROOT=/c CHROOT='$chroot_dir'" $template_init > $init_script
 chmod +x $init_script
 
