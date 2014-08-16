@@ -3,11 +3,10 @@
 export DEBIAN_FRONTEND=noninteractive
 
 ### read the settings if they are given
-settings=$1
-if test -f $settings
+if test $1
 then
     set -a
-    source $settings
+    source $1
     set +a
     container=true   # this is installation of a docker container
 fi
@@ -26,6 +25,9 @@ install='apt-get -y -o DPkg::Options::=--force-confdef -o DPkg::Options::=--forc
 $install psmisc openssh-server netcat cron mini-httpd supervisor
 initctl reload-configuration
 
+mkdir /var/run/sshd
+chmod 755 /var/run/sshd
+
 ### generates the file /etc/defaults/locale
 $install language-pack-en
 update-locale
@@ -42,7 +44,7 @@ cp -TdR $dir/overlay/ /
 if [ "$container" = 'true' ]
 then
     sed -i /etc/supervisord.conf \
-        -e '/^nodaemon/ c nodaemon=false/'
+        -e '/^nodaemon/ c nodaemon=true'
 fi
 
 ### set correct permissions
