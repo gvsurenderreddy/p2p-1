@@ -9,6 +9,7 @@ then
     set -a
     source $settings
     set +a
+    container=true   # this is installation of a docker container
 fi
 
 ### update /etc/apt/sources.list
@@ -22,7 +23,7 @@ EOF
 apt-get update
 apt-get -y upgrade
 install='apt-get -y -o DPkg::Options::=--force-confdef -o DPkg::Options::=--force-confold install'
-$install openssh-server netcat cron mini-httpd supervisor
+$install psmisc openssh-server netcat cron mini-httpd supervisor
 initctl reload-configuration
 
 ### generates the file /etc/defaults/locale
@@ -35,6 +36,14 @@ useradd --system --create-home vnc
 ### copy overlay files over to the system
 dir=$(dirname $0)
 cp -TdR $dir/overlay/ /
+
+### if this is a docker container, then
+### supervisor should not run as a daemon
+if [ "$container" = 'true' ]
+then
+    sed -i /etc/supervisord.conf \
+        -e '/^nodaemon/ c nodaemon=false/'
+fi
 
 ### set correct permissions
 chown vnc:vnc -R /home/vnc/
