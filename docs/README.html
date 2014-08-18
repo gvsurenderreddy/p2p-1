@@ -114,9 +114,13 @@ P2P server, and the connection between the two clients.
 
 
 <p>
-For more security and flexibility, the installation is done inside a
-chroot environment (which is built with debootstrap):
+For more security and flexibility, the installation is done inside
+a chroot environment (built with debootstrap), or inside a
+container (built with docker).
 </p>
+<ul>
+<li id="sec-1.1.1">Installation in chroot <br/>
+
 
 
 
@@ -144,7 +148,37 @@ with:
 
 
 
+</li>
+<li id="sec-1.1.2">Installation in container <br/>
 
+
+
+
+<pre class="example">git clone https://github.com/dashohoxha/p2p.git
+cp p2p/install/settings.sh p2p/cfg.sh
+vim p2p/cfg.sh
+nohup nice p2p/install/docker.sh p2p/cfg.sh &amp;
+tail -f nohup.out
+</pre>
+
+
+
+
+<p>
+After the installation is done, you can start and stop the
+container with:
+</p>
+
+
+<pre class="example">docker start P2P
+docker stop P2P
+</pre>
+
+
+
+
+</li>
+</ul>
 </div>
 
 </div>

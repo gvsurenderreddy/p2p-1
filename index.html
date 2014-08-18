@@ -9,20 +9,38 @@
     <h1><a href="https://github.com/dashohoxha/p2p">P2P Server</a></h1>
 
     <h2>Installation of a P2P server</h2>
-    <p>The installation is done inside a chroot environment (which is
-      built with debootstrap):
-      <pre>cd /var/chroot/
+
+    <p>The installation is done inside a chroot environment (built
+      with debootstrap), or inside a container (built with
+      docker).</p>
+
+    <h3>Installation in chroot</h3>
+ 
+    <pre>cd /var/chroot/
 git clone https://github.com/dashohoxha/p2p.git
 cp p2p/install/settings.sh p2p/cfg.sh
 vim p2p/cfg.sh
 nohup nice p2p/install/chroot.sh p2p/cfg.sh &
 tail -f nohup.out</pre>
-    </p>
 
     <p>After the installation is done, you can start and stop the
       service with:
       <pre>/etc/init.d/chroot-P2P stop
 /etc/init.d/chroot-P2P start</pre>
+    </p>
+
+    <h3>Installation in container</h3>
+ 
+    <pre>git clone https://github.com/dashohoxha/p2p.git
+cp p2p/install/settings.sh p2p/cfg.sh
+vim p2p/cfg.sh
+nohup nice p2p/install/docker.sh p2p/cfg.sh &
+tail -f nohup.out</pre>
+
+    <p>After the installation is done, you can start and stop the
+      container with:
+      <pre>docker start P2P
+docker stop P2P</pre>
     </p>
 
     <h2>Installation on the client</h2>

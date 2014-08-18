@@ -32,25 +32,44 @@
 
 ** Installation of a P2P server
 
-   For more security and flexibility, the installation is done inside a
-   chroot environment (which is built with debootstrap):
+   For more security and flexibility, the installation is done inside
+   a chroot environment (built with debootstrap), or inside a
+   container (built with docker).
 
-   #+BEGIN_EXAMPLE
-   cd /var/chroot/
-   git clone https://github.com/dashohoxha/p2p.git
-   cp p2p/install/settings.sh p2p/cfg.sh
-   vim p2p/cfg.sh
-   nohup nice p2p/install/chroot.sh p2p/cfg.sh &
-   tail -f nohup.out
-   #+END_EXAMPLE
+*** Installation in chroot
 
-   After the installation is done, you can start and stop the service
-   with:
-   #+BEGIN_EXAMPLE
-   /etc/init.d/chroot-P2P stop
-   /etc/init.d/chroot-P2P start
-   #+END_EXAMPLE
+    #+BEGIN_EXAMPLE
+    cd /var/chroot/
+    git clone https://github.com/dashohoxha/p2p.git
+    cp p2p/install/settings.sh p2p/cfg.sh
+    vim p2p/cfg.sh
+    nohup nice p2p/install/chroot.sh p2p/cfg.sh &
+    tail -f nohup.out
+    #+END_EXAMPLE
 
+    After the installation is done, you can start and stop the service
+    with:
+    #+BEGIN_EXAMPLE
+    /etc/init.d/chroot-P2P stop
+    /etc/init.d/chroot-P2P start
+    #+END_EXAMPLE
+
+*** Installation in container
+
+    #+BEGIN_EXAMPLE
+    git clone https://github.com/dashohoxha/p2p.git
+    cp p2p/install/settings.sh p2p/cfg.sh
+    vim p2p/cfg.sh
+    nohup nice p2p/install/docker.sh p2p/cfg.sh &
+    tail -f nohup.out
+    #+END_EXAMPLE
+
+    After the installation is done, you can start and stop the
+    container with:
+    #+BEGIN_EXAMPLE
+    docker start P2P
+    docker stop P2P
+    #+END_EXAMPLE
 
 ** Sharing the desktop (on the client)
 
