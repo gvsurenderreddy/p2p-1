@@ -1,11 +1,11 @@
-#!/bin/bash
+#!/bin/bash -x
 ### Install a new chrooted server from scratch, with debootstrap.
 
 source_dir=$(dirname $(dirname $0))
 
 function usage {
     echo "
-Usage: $0 [OPTIONS] <settings> [options]
+Usage: $0 <settings> [options]
 Install $source_dir inside a chroot in another directory.
 
     <settings>    file of installation/configuration settings
