@@ -1,5 +1,5 @@
 #!/bin/bash -x
-### Install a new chrooted server from scratch, with debootstrap.
+### Create a docker image.
 
 source_dir=$(dirname $(dirname $0))
 
@@ -19,32 +19,45 @@ Install $source_dir inside a container.
     exit 0
 }
 
+### collect in a file all the options and settings
+options=$source_dir/options.sh
+cat <<EOF > $options
+#!/bin/bash
+### This file contains all the options and settings
+### given to the install script from the command line.
+
+EOF
+
 ### get the options
 for opt in "$@"
 do
     case $opt in
-	--target=*)    target=${opt#*=} ;;
-	--arch=*)      arch=${opt#*=} ;;
-	--suite=*)     suite=${opt#*=} ;;
-	--mirror=*)    apt_mirror=${opt#*=} ;;
-	-h|--help)     usage ;;
+        --target=*)    target=${opt#*=} ;;
+        --arch=*)      arch=${opt#*=} ;;
+        --suite=*)     suite=${opt#*=} ;;
+        --mirror=*)    apt_mirror=${opt#*=} ;;
+        -h|--help)     usage ;;
         --*=*)
-	    optvalue=${opt#*=}
-	    optname=${opt%%=*}
-	    optname=${optname:2}
-	    eval export $optname="$optvalue"
-	    ;;
-	*)
-	    if [ ${opt:0:1} = '-' ]; then usage; fi
+            optvalue=${opt#*=}
+            optname=${opt%%=*}
+            optname=${optname:2}
+            eval $optname="$optvalue"
+            echo $optname="$optvalue" >> $options
+            ;;
+        *)
+            if [ ${opt:0:1} = '-' ]; then usage; fi
 
-	    settings=$opt
-	    if ! test -f "$settings"
+            settings=$opt
+            if ! test -f "$settings"
             then
-		echo "File '$settings' does not exist."
-		exit 1
-	    fi
-	    set -a;  source $settings;  set +a
-	    ;;
+                echo "File '$settings' does not exist."
+                exit 1
+            fi
+            source $settings
+            echo "### Start: $settings" >> $options
+            cat $settings >> $options
+            echo "### End: $settings" >> $options
+            ;;
     esac
 done
 
@@ -67,17 +80,18 @@ cd $current_dir
 docker=docker.io
 test "$(which $docker)" || apt-get install -y $docker
 
+### get the code_dir
+code_dir=/usr/local/src/$(basename $source_dir)
+echo code_dir=$code_dir >> $options
+
 ### run the install script on the image ubuntu:14.04
-source=$(basename $source_dir)
-export code_dir=/usr/local/src/$source
-cp $settings $source_dir/settings.sh
-container=$source
+container=$(basename $source_dir)
 test "$($docker ps | grep -w $target)" && $docker stop $target
 test "$($docker ps -a | grep -w $target)" && $docker rm $target
 test "$($docker ps | grep -w $container)" && $docker stop $container
 test "$($docker ps -a | grep -w $container)" && $docker rm $container
-$docker run -i -t --name=$container -v $source_dir:$code_dir ubuntu:14.04 \
-    $code_dir/install/install-and-config.sh $code_dir/settings.sh
+$docker run --name=$container -v $source_dir:$code_dir ubuntu:14.04 \
+    $code_dir/install/install-container.sh $code_dir/options.sh
 
 ### save the new image
 image=$container
@@ -90,7 +104,8 @@ $docker rm $container
 ### run the new image and create a container
 $docker run --name=$target -d \
     -p $sshd_port:$sshd_port -p $httpd_port:$httpd_port \
-    $image /usr/bin/supervisord -c /etc/supervisord.conf
+    -v $source_dir:$code_dir \
+    $image /usr/bin/supervisord -c /etc/supervisor/supervisord.conf --nodaemon
 
 ### start the container on boot
 if [ "$start_on_boot" = 'true' ]

@@ -23,28 +23,28 @@ Install $source_dir inside a chroot in another directory.
 for opt in "$@"
 do
     case $opt in
-	--target=*)    target=${opt#*=} ;;
-	--arch=*)      arch=${opt#*=} ;;
-	--suite=*)     suite=${opt#*=} ;;
-	--mirror=*)    apt_mirror=${opt#*=} ;;
-	-h|--help)     usage ;;
+        --target=*)    target=${opt#*=} ;;
+        --arch=*)      arch=${opt#*=} ;;
+        --suite=*)     suite=${opt#*=} ;;
+        --mirror=*)    apt_mirror=${opt#*=} ;;
+        -h|--help)     usage ;;
         --*=*)
-	    optvalue=${opt#*=}
-	    optname=${opt%%=*}
-	    optname=${optname:2}
-	    eval export $optname="$optvalue"
-	    ;;
-	*)
-	    if [ ${opt:0:1} = '-' ]; then usage; fi
+            optvalue=${opt#*=}
+            optname=${opt%%=*}
+            optname=${optname:2}
+            eval export $optname="$optvalue"
+            ;;
+        *)
+            if [ ${opt:0:1} = '-' ]; then usage; fi
 
-	    settings=$opt
-	    if ! test -f "$settings"
+            settings=$opt
+            if ! test -f "$settings"
             then
-		echo "File '$settings' does not exist."
-		exit 1
-	    fi
-	    set -a;  source $settings;  set +a
-	    ;;
+                echo "File '$settings' does not exist."
+                exit 1
+            fi
+            set -a;  source $settings;  set +a
+            ;;
     esac
 done
 
@@ -81,13 +81,11 @@ chroot $target apt-get update
 chroot $target apt-get -y install ubuntu-minimal
 
 ### copy the local git repository to the target dir
-export code_dir=/usr/local/src
-chroot $target mkdir -p $code_dir
-cp -a $source_dir $target/$code_dir/
+mkdir -p $target/usr/local/src/
+cp -a $source_dir $target/usr/local/src/
+export code_dir=/usr/local/src/$(basename $source_dir)
 
 ### run install/config scripts
-source=$(basename $source_dir)
-code_dir=$code_dir/$source
 chroot $target $code_dir/install/install-and-config.sh
 
 ### create an init script

@@ -1,23 +1,5 @@
 #!/bin/bash -x
 
-export DEBIAN_FRONTEND=noninteractive
-
-### read the settings if they are given
-if test $1
-then
-    set -a
-    source $1
-    set +a
-    container=true   # this is installation of a docker container
-fi
-
-### update /etc/apt/sources.list
-cat << EOF > /etc/apt/sources.list
-deb $apt_mirror $suite main restricted universe multiverse
-deb $apt_mirror $suite-updates main restricted universe multiverse
-deb http://security.ubuntu.com/ubuntu $suite-security main restricted universe multiverse
-EOF
-
 ### upgrade and install other needed packages
 apt-get update
 apt-get -y upgrade
@@ -25,6 +7,7 @@ install='apt-get -y -o DPkg::Options::=--force-confdef -o DPkg::Options::=--forc
 $install psmisc openssh-server netcat cron mini-httpd supervisor
 initctl reload-configuration
 
+### create a run dir for sshd
 mkdir /var/run/sshd
 chmod 755 /var/run/sshd
 
@@ -38,14 +21,6 @@ useradd --system --create-home vnc
 ### copy overlay files over to the system
 dir=$(dirname $0)
 cp -TdR $dir/overlay/ /
-
-### if this is a docker container, then
-### supervisor should not run as a daemon
-if [ "$container" = 'true' ]
-then
-    sed -i /etc/supervisord.conf \
-        -e '/^nodaemon/ c nodaemon=true'
-fi
 
 ### set correct permissions
 chown vnc:vnc -R /home/vnc/
