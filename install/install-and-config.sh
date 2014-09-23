@@ -3,8 +3,7 @@
 ### upgrade and install other needed packages
 apt-get update
 apt-get -y upgrade
-install='apt-get -y -o DPkg::Options::=--force-confdef -o DPkg::Options::=--force-confold install'
-$install psmisc openssh-server netcat cron mini-httpd supervisor
+apt-get -y install psmisc openssh-server netcat cron mini-httpd supervisor git
 initctl reload-configuration
 
 ### create a run dir for sshd
@@ -12,8 +11,8 @@ mkdir /var/run/sshd
 chmod 755 /var/run/sshd
 
 ### generates the file /etc/defaults/locale
-$install language-pack-en
-update-locale
+#apt-get -y install language-pack-en
+#update-locale
 
 ### create a user 'vnc'
 useradd --system --create-home vnc
