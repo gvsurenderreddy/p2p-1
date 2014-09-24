@@ -71,6 +71,17 @@
     docker stop P2P
     #+END_EXAMPLE
 
+*** Pulling it from DockerHub
+
+    #+BEGIN_EXAMPLE
+    docker search dashohoxha/p2p
+    docker pull dashohoxha/p2p
+    docker run -d --name=P2P -p 2201:2201 -p 800:800 dashohoxha/p2p
+    #+END_EXAMPLE
+
+    For more details about this DockerHub image see:
+    https://registry.hub.docker.com/u/dashohoxha/p2p/
+
 ** Sharing the desktop (on the client)
 
    To share the desktop we need a VNC server. Make sure that *x11vnc*
