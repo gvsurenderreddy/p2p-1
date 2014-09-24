@@ -22,4 +22,4 @@ $code_dir/install/install-and-config.sh
 ### when it runs inside a container
 ### the correct setting should be 'nochroot'
 sed -i /etc/mini-httpd.conf \
-    -e 's/^chroot/nochroot'
+    -e 's/^chroot/nochroot/'
