@@ -43,6 +43,16 @@ tail -f nohup.out</pre>
 docker stop P2P</pre>
     </p>
 
+    <h3>Pulling it from DockerHub</h3>
+ 
+    <pre>docker search dashohoxha/p2p
+docker pull dashohoxha/p2p
+docker run -d --name=P2P -p 2201:2201 -p 800:800 dashohoxha/p2p</pre>
+
+    <p>For more details about this DockerHub image
+    see: <a href="https://registry.hub.docker.com/u/dashohoxha/p2p/"
+    target="_blank">https://registry.hub.docker.com/u/dashohoxha/p2p/</a>.</p>
+
     <h2>Installation on the client</h2>
     <ol>
       <li>Get the scripts from GitHub:
